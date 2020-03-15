@@ -520,7 +520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   code: 'x = 92;
 
-    var = (32 + 4) / 7 * (x - 4) + 3;'
+    var = x * sqrt(9);'
 --- !u!4 &1888375530
 Transform:
   m_ObjectHideFlags: 0
