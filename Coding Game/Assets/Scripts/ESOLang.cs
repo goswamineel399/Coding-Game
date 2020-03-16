@@ -148,15 +148,18 @@ public class ESOLang
 
     private parenthetical findParenthetical(string preface, string expression)
     {
-        int indexOfStart = expression.IndexOf(preface + "(", StringComparison.Ordinal) + preface.Length;
+        int indexOfStart = expression.IndexOf(preface + "(") + preface.Length;
         int indexOfEnd = expression.IndexOf(')');
 
-        if (indexOfStart != -1)
+        if (indexOfStart - preface.Length > -1)
         {
+            Debug.Log("parentheses found: " + indexOfStart.ToString());
+            /*
             if (indexOfEnd != -1)
-                throw new MismatchedParentheticalException();
+                throw new MismatchedParentheticalException();*/
             return new parenthetical(indexOfStart, indexOfEnd, expression.Substring(indexOfStart + 1, indexOfEnd));
         }
+        Debug.Log("absolutely no parentheses found");
         return null;
     }
     #endregion

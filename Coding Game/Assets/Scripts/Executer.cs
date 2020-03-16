@@ -2,12 +2,10 @@
 
 public class Executer : MonoBehaviour
 {
-    [TextArea(0, 30)]
-    public string code;
     // Start is called before the first frame update
-    void Start()
+    public string Execute(string code)
     {
         var interpreter = new ESOLang(code.Split('\n'));
-        Debug.Log(interpreter.execute());
+        return interpreter.execute();
     }
 }

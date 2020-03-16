@@ -13,6 +13,8 @@ public class introSequence : MonoBehaviour
 
     public TMP_Text textOut;
 
+    public bool disable;
+
     private bool canStart;
     private float timer;
     private int currIndex;
@@ -24,7 +26,6 @@ public class introSequence : MonoBehaviour
         currIndex = 1;
         textOut.text = "";
     }
-
 
     void Update()
     {
@@ -54,7 +55,10 @@ public class introSequence : MonoBehaviour
 
     public void startAnimation()
     {
-        timer = Time.time;
-        canStart = true;
+        if (!disable)
+        {
+            timer = Time.time;
+            canStart = true;
+        }
     }
 }
