@@ -23,6 +23,7 @@ public class ESOLang
 
     public class UndefinedVariableException : Exception {}
     public class MismatchedParentheticalException : Exception { }
+    public class SysEvalException : Exception { }
 
     public class parenthetical
     {
@@ -53,11 +54,18 @@ public class ESOLang
     #region privateMemberFunctions
     private float sysEval(string expression)
     {
-        var loDataTable = new DataTable();
-        var loDataColumn = new DataColumn("Eval", typeof(float), expression);
-        loDataTable.Columns.Add(loDataColumn);
-        loDataTable.Rows.Add(0);
-        return (float)(loDataTable.Rows[0]["Eval"]);
+        try
+        {
+            var loDataTable = new DataTable();
+            var loDataColumn = new DataColumn("Eval", typeof(float), expression);
+            loDataTable.Columns.Add(loDataColumn);
+            loDataTable.Rows.Add(0);
+            return (float)(loDataTable.Rows[0]["Eval"]);
+        }
+        catch (Exception e)
+        {
+            throw new SysEvalException();
+        }
     }
     private string formatVarsAsString()
     {
@@ -77,57 +85,65 @@ public class ESOLang
     }
 
     #region Math
-    private string performMath(mathOperation operation, string expression)
+
+    private parenthetical getMathParenthetical(mathOperation operation, string expression)
     {
-        parenthetical newParenthetical = findParenthetical("sqrt", expression);
-        while (newParenthetical != null)
+        parenthetical newParenthetical = findParenthetical(Enum.GetName(typeof(mathOperation), operation), expression);
+        return newParenthetical;
+    }
+
+    private string performMath2(parenthetical mathParenthetical, mathOperation operation, string expression)
+    {
+        string mathString = "";
+        switch (operation)
         {
-            string mathString = "";
-            switch (operation)
-            {
-                case mathOperation.sqrt:
-                    mathString = Mathf.Sqrt(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.sin:
-                    mathString = Mathf.Sin(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.cos:
-                    mathString = Mathf.Cos(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.tan:
-                    mathString = Mathf.Tan(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.arcsin:
-                    mathString = Mathf.Asin(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.arccos:
-                    mathString = Mathf.Acos(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.arctan:
-                    mathString = Mathf.Atan(sysEval(newParenthetical.expression)).ToString();
-                    break;
-                case mathOperation.abs:
-                    mathString = Mathf.Abs(sysEval(newParenthetical.expression)).ToString();
-                    break;
-            }
-            expression = expression.Substring(0, newParenthetical.startIndex - 1) + mathString +
-                         expression.Substring(newParenthetical.endIndex + 1);
-            newParenthetical = findParenthetical("sqrt", expression);
+            case mathOperation.sqrt:
+                mathString = Mathf.Sqrt(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.sin:
+                mathString = Mathf.Sin(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.cos:
+                mathString = Mathf.Cos(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.tan:
+                mathString = Mathf.Tan(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.arcsin:
+                mathString = Mathf.Asin(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.arccos:
+                mathString = Mathf.Acos(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.arctan:
+                mathString = Mathf.Atan(sysEval(mathParenthetical.expression)).ToString();
+                break;
+            case mathOperation.abs:
+                mathString = Mathf.Abs(sysEval(mathParenthetical.expression)).ToString();
+                break;
         }
+        expression = expression.Substring(0, mathParenthetical.startIndex - 1) + mathString +
+                     expression.Substring(mathParenthetical.endIndex + 1);
         return expression;
+    }
+
+    private string performMath1(mathOperation operation, string expression)
+    {
+        string result = "";
+        try
+        {
+            result = performMath2(getMathParenthetical(operation, expression), operation, expression);
+        }
+        catch (SysEvalException e)
+        {
+        }
+        return result;
     }
     #endregion
 
     private string doMath(string expression)
     {
-        expression = performMath(mathOperation.sqrt, expression);
-        expression = performMath(mathOperation.sin, expression);
-        expression = performMath(mathOperation.cos, expression);
-        expression = performMath(mathOperation.tan, expression);
-        expression = performMath(mathOperation.arccos, expression);
-        expression = performMath(mathOperation.arcsin, expression);
-        expression = performMath(mathOperation.arctan, expression);
-        expression = performMath(mathOperation.abs, expression);
+
         return expression;
     }
 
