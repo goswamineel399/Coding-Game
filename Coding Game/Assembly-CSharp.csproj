@@ -62,13 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GUIScreenLayout.cs" />
     <Compile Include="Assets\Scripts\ESOLang.cs" />
     <Compile Include="Assets\Scripts\Executer.cs" />
+    <Compile Include="Assets\Scripts\GUIScreenLayout.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\VirtualConsole.cs" />
     <Compile Include="Assets\Scripts\VirtualProgram.cs" />
-    <Compile Include="Assets\introSequence.cs" />
+    <Compile Include="Assets\Scripts\introSequence.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
